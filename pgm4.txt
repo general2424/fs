@@ -1,87 +1,112 @@
-#include<iostream>
-#include<string.h>
-#include<fstream>
+#include<stdio.h>
+#include<conio.h>
+#include<iostream.h>
 #include<stdlib.h>
-using namespace std;
+#include<fstream.h>
+#include<string.h>
 class student
 {
-	public:char name[20],usn[10],age[5],sem[5],branch[5];
+public:char name[25],usn[15],branch[15],buffer[45];
 };
-
-student s[100],t;
-char buffer[45],temp1[20],temp2[20];
-int count=0,i;
-fstream fp;
-void pack(student p)
+student s,s1[100];
+char extra[45];
+int i,no=0,mode=0;
+void pack()
 {
-	fp.open("hello.txt",ios::out|ios::app);
-	strcpy(buffer,p.name);
-	strcat(buffer,"|");
-	strcat(buffer,p.usn);
-	strcat(buffer,"|");
-	strcat(buffer,p.age);
-	strcat(buffer,"|");
-	strcat(buffer,p.sem);
-	strcat(buffer,"|");
-	strcat(buffer,p.branch);
-	strcat(buffer,"|");
-      //	int x=strlen(buffer);
-       //	for(int j=0;j<45-x;j++)
-       //	strcat(buffer,"!");
-	fp<<count<<"|"<<buffer<<endl;
-	fp.close();
-
+fstream app;
+if(mode==0)
+app.open("st3.txt",ios::app);
+else
+app.open("st3.txt",ios::out);
+if(!app)
+{
+cout<<"cant open the file in output mode";
+getch();
+exit(0);
 }
-
+strcpy(s.buffer,s.name);
+strcat(s.buffer,"|");
+strcat(s.buffer,s.usn);
+strcat(s.buffer,"|");
+strcat(s.buffer,s.branch);
+//int count=strlen(s.buffer);
+//for(int k=0;k<45-count;k++)
+//strcat(s.buffer,"|");
+strcat(s.buffer,"\n");
+app<<s.buffer;
+app.close();
+}
+void unpack()
+{
+fstream in;
+in.open("st3.txt",ios::in);
+i=0,no=0;
+if(!in)
+{
+cout<<"cant open the file in input mode";
+getch();
+exit(0);
+}
+while(!in.eof())
+{
+in.getline(s1[i].name,15,'|');
+in.getline(s1[i].usn,15,'|');
+in.getline(s1[i].branch,15,'\n');
+//in.getline(extra,45,'\n');
+no++;
+i++;
+}
+in.close();
+}
 void write()
 {
-	cout<<"Enter the name\n";
-	cin>>t.name;
-	cout<<"Enter the usn\n";
-	cin>>t.usn;
-	cout<<"Enter the age\n";
-	cin>>t.age;
-	cout<<"Enter the sem\n";
-	cin>>t.sem;
-	cout<<"Enter the branch\n";
-	cin>>t.branch;
-	pack(t);
+cout<<"\n enter the student name\n";
+cin>>s.name;
+cout<<"enter the student usn\n";
+cin>>s.usn;
+cout<<"enter the student branch\n";
+cin>>s.branch;
+pack();
+mode=0;
 }
-
 void search()
 {
-	cout<<"Enter the rrn\n";
-	cin>>temp1;
-	fp.open("hello.txt",ios::in);
-	for(i=0;i<count;i++)
-	{
-		fp.getline(buffer,100);
-		sscanf(buffer,"%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|",temp2,s[i].name,s[i].usn,s[i].age,s[i].sem,s[i].branch);
-		if(strcmp(temp1,temp2)==0)
-		{
-			cout<<"Record found\n"<<s[i].name<<"\t"<<s[i].usn<<"\t"<<s[i].age<<"\t"<<s[i].sem<<"\t"<<s[i].branch<<endl;
-			break;
-		}
-	}
-	if(i==count)
-	cout<<"Record not found";
-	fp.close();
-}
-int  main()
+char usn[15],extra[45];
+int rrn;
+cout<<"enter the rrn to search=";
+cin>>rrn;
+unpack();
+for(int i=0;i<no-1;i++)
 {
-	int c;
-
-	fp.open("hello.txt",ios::out);
-	fp.close();
-	while(1)
-	{
-		cout<<"\n1.Write\n 2.Search\n 3.Exit\n Enter your choice\n";
-		cin>>c;
-		switch(c)
-		{
-			case 1:count++;write();break;
-			case 2:search();break;
-			default:exit(0);
-		}
-	}
+if(rrn==i+1)
+{
+cout<<"\nrecord found";
+ cout<<"\n"<<s1[i].name<<"\t"<<s1[i].usn<<"\t"<<s1[i].branch;
+getch();
+return;
+}
+}
+cout<<"record not found";
+getch();
+return;
+}
+void main() {
+int choice;
+for(;;) {
+clrscr();
+cout<<"\n 0:exit";
+cout<<"\n 1:write";
+cout<<"\n 2:search";
+cout<<"enter u choice \n";
+cin>>choice;
+switch(choice) {
+case 1:write();
+break;
+case 2:search();
+break;
+case 0:exit(0);
+default:cout<<"\n invalid input";
+break;
+}
+}
 }
