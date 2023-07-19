@@ -1,140 +1,173 @@
-#include<iostream>
+#include<stdio.h>
+#include<conio.h>
 #include<string.h>
-#include<fstream>
+#include<iostream.h>
+#include<process.h>
+#include<values.h>
+#include<fstream.h>
 #include<stdlib.h>
-using namespace std;
-
-
-
-class student
+class record
 {
-	public:char name[20],usn[10],age[5],sem[5],branch[5];
-};
-
-student s[100],t;
-char buffer[50],buffer1[50];
-char tempusn[15],temprrn[10],keyusn[15];
-int count=0,i;
-fstream fp1,fp2;
-void pack(student p)
+public:char name[20],usn[20],branch[20],ind[5];
+}rec[20];
+char st_no[5];
+int no;
+void pack()
 {
-	fp1.open("std.txt",ios::out|ios::app);
-	fp2.open("ind.txt",ios::out|ios::app);
-	strcpy(buffer,p.name);
-	strcat(buffer,"|");
-	strcat(buffer,p.usn);
-	strcat(buffer,"|");
-	strcat(buffer,p.age);
-	strcat(buffer,"|");
-	strcat(buffer,p.sem);
-	strcat(buffer,"|");
-	strcat(buffer,p.branch);
-	int x=strlen(buffer);
-	for(int j=0;j<45-x;j++)
-	strcat(buffer,"!");
-	fp1<<count<<"|"<<buffer<<endl;
-	fp2<<p.usn<<"|"<<count<<"|"<<endl;
-	fp1.close();
-	fp2.close();
+fstream fle1,fle2;
+fle1.open("i.txt",ios::out);
+fle2.open("r.txt",ios::out);
+if((!fle1)||(!fle2))
+{
+cout<<"cant open either\n";
+getch();
+exit(0);
 }
-
-void write()
+for(int i=0;i<no;i++)
 {
-	cout<<"Enter the name\n";
-	cin>>t.name;
-	cout<<"Enter the usn\n";
-	cin>>t.usn;
-	cout<<"Enter the age\n";
-	cin>>t.age;
-	cout<<"Enter the sem\n";
-	cin>>t.sem;
-	cout<<"Enter the branch\n";
-	cin>>t.branch;
-	pack(t);
+fle1<<rec[i].usn<<"|"<< i<<"\n";
+ fle2<<i<<"|"<<rec[i].name<<"|"<<rec[i].usn<<"|"<<rec[i].branch<<"\n";
+}
+fle1.close();
+fle2.close();
+}
+void unpack()
+{
+fstream fle2;
+fle2.open("r.txt",ios::in);
+for(int i=0;i<no;i++)
+{
+fle2.getline(rec[i].ind,5,'|');
+fle2.getline(rec[i].name,20,'|');
+fle2.getline(rec[i].usn,20,'|');
+fle2.getline(rec[i].branch,20,'\n');
+}
+fle2.close();
 }
 void search()
 {
-	student x;
-	fp1.open("std.txt",ios::in);
-	fp2.open("ind.txt",ios::in);
-	cout<<" Enter the USN to search for:";
-	cin>>keyusn;
-	for(i=0;i<count;i++)
-	{
-
-			fp2.getline(buffer,100);
-			sscanf(buffer,"%[^|]|%[^|]|",tempusn,temprrn);
-			if(strcmp(tempusn,keyusn)==0)
-			{
-				cout<<" Record found"<<endl;
-				int rrn=atoi(temprrn);
-				cout<<" RRN value of record:"<<rrn<<endl;
-				fp1.seekg((rrn-1)*49,ios::beg);
-				fp1.getline(buffer1,100);
-				//cout<<"buffer content"<<buffer1<<endl;
-				sscanf(buffer1,"%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^!]!",temprrn,x.name,x.usn,x.age,x.sem,x.branch);
-				cout<<"\nUSN:"<<x.usn<<"\nNAME:"<<x.name<<"\nAGE:"<<x.age<<"\nSEM:"<<x.sem<<"\nBRANCH:"<<x.branch<<endl;
-		       		break;
-			}
-}
-	if(i==count)
-	cout<<"record not found";
-	fp1.close();
-	fp2.close();
-}
-
-
-void delet()
+char name[20],usn[20],branch[20],ind[5];
+unpack();
+for(int i=0;i<no;i++)
+if(strcmp(st_no,rec[i].ind)==0)
 {
-	int j;
-	char temp[5];
-	if(i==count)
-	return;
-	fp1.open("std.txt",ios::in);
-	for( j=0;j<count;j++)
-	{
-		fp1.getline(buffer,100);
-		sscanf(buffer,"%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^!]!",temp,s[j].name,s[j].usn,s[j].age,s[j].sem,s[j].branch);
-	}
-	fp1.close();
-	//fp2.close();
-		cout<<" deleting record no:"<<i+1<<endl;
-
-	remove("std.txt");
-	remove("ind.txt");
-	fp1.open("std.txt",ios::out);
-	fp2.open("ind.txt",ios::out);
-	fp1.close();
-	fp2.close();
-	int cntold=count;
-	count=0;
-	for(j=0;j<cntold;j++)
-	if(j!=i)
-	{
-	count++;
-	pack(s[j]);
-	}
-
+cout<<"search sucess\n";
+cout<<"\nname="<<rec[i].name<<"usn="<<rec[i].usn<<"bran="<<rec[i].branch<<"\n";
 }
-int main()
+}
+void delete_rec(char rt_no[])
 {
-	int c;
-
-	fp1.open("std.txt",ios::out);
-	fp2.open("ind.txt",ios::out);
-	fp1.close();
-	fp2.close();
-	while(1)
-	{
-		cout<<"\n1.Write\n 2.Search\n 3.Delete\n 4.Exit\n Enter your choice\n";
-		cin>>c;
-		switch(c)
-		{
-			case 1:count++;write();break;
-			case 2:search();break;
-			case 3:search();delet();break;
-			default:exit(0);
-		}
-	}
+int flag=1;
+char name[20],usn[20],branch[20];
+for(int i=0;i<no;i++)
+if(strcmp(rec[i].usn,rt_no)==0)
+flag=i;
+if(flag==-1)
+{
+cout<<"error\n";
+getch();
+exit(0);
 }
-
+if(flag==no)
+{
+no--;
+cout<<"deleted\n";
+pack();
+return;
+}
+for(i=flag;i<no;i++)
+{
+rec[i]=rec[i+1];
+no--;
+cout<<"deleted\n";
+pack();
+return;
+}
+}
+void main()
+{
+char st_usn[20],rt_usn[20];
+fstream fle1,fle2;
+char name[20],usn[20],branch[20],ind[5];
+int i,flag,ch;
+clrscr();
+for(;;)
+{
+cout<<"1:add\n2:search\n3:delete\n4:display\n";
+cout<<"enter your choice\n";
+cin>>ch;
+switch(ch)
+{
+case 1:cout<<"enter the no of records\n";
+cin>>no;
+cout<<"enter the details of students\n";
+for(i=0;i<no;i++)
+{
+cout<<"name=";
+cin>>rec[i].name;
+cout<<"usn=";
+cin>>rec[i].usn;
+cout<<"branch=";
+cin>>rec[i].branch;
+}
+pack();
+break;
+case 2:cout<<"enter thye usn u want to search\n";
+cin>>st_usn;
+//fstream fle1;
+fle1.open("i.txt",ios::in);
+if(!fle1)
+{
+cout<<"cant open the file\n";
+getch();
+exit(0);
+}
+flag=0;
+for(i=0;i<no;i++)
+{
+fle1.getline(rt_usn,20,'|');
+fle1.getline(st_no,5,'\n');
+if(strcmp(rt_usn,st_usn)==0)
+{
+search();
+flag=1;
+}
+}
+if(!flag)
+cout<<"not found\n";
+fle1.close();
+break;
+case 3:cout<<"enter thye usn u want to delete\n";
+cin>>st_usn;
+fle1.open("i.txt",ios::in);
+if(!fle1)
+{
+cout<<"cant open the file\n";
+getch();
+exit(0);
+}
+flag=0;
+for(i=0;i<no;i++)
+{
+fle1.getline(rt_usn,20,'|');
+fle1.getline(st_no,5,'\n');
+if(strcmp(rt_usn,st_usn)==0)
+{
+delete_rec(rt_usn);
+flag=1;
+}
+}
+if(!flag)
+cout<<"failure\n";
+fle1.close();
+break;
+case 4:for(int i=0;i<no;i++)
+{
+cout<<"name="<<rec[i].name<<"usn="<<rec[i].usn<<"branch="<<rec[i].branch<<"\n";
+break;
+default:exit(0);
+break;
+}
+}
+}
+}
