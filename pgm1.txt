@@ -1,56 +1,65 @@
-#include<iostream>
+#include<iostream.h>
+#include<conio.h>
+#include<process.h>
 #include<string.h>
-#include<fstream>
-#include<stdlib.h>
-using namespace std;
-
-char* strrev(char* name){
-
-int i1=0,l;
-char temp;
-					l=strlen(name);
-					while(i1<l)
-						{
-							temp=name[i1];
-							name[i1]=name[l-1];
-							name[l-1]=temp;
-							i1++;
-							l--;
-						}
-					return name;
-}
-
-int  main()
+#include<fstream.h>
+class names
 {
-	fstream file1,file2;
-	char ifile[10],ofile[10],temp[25];
-	int n,i=0;
-
-	cout<<"Enter the first filename"<<endl;
-	cin>>ofile;
-	cout<<"Enter the number of names to be entered"<<endl;
-	cin>>n;
-	cout<<"Enter the names:"<<endl;
-	file1.open(ofile,ios::out);
-	while(i<n)
-	{
-		cin>>temp;
-		file1<<temp<<endl;
-		i++;
-	}
-	file1.close();
-	file1.open(ofile,ios::in);
-	cout<<"Enter the second filename"<<endl;
-	cin>>ifile;
-	file2.open(ifile,ios::out);
-	i=0;
-	while(i<n)
-	{
-		file1>>temp;
-		file2<<strrev(temp)<<endl;
-		cout<<temp<<endl;
-		i++;
-	}
-	cout<<"Names are reversed and written successfully  :) ";
-	
+public:char name[50];
+};
+void reverse(ofstream &out,char name[255])
+{
+char *rev;
+rev=name+strlen(name)-1;
+while(rev>=name)
+{
+cout<<*rev;
+out<<*rev;
+rev--;
+}
+cout<<endl;
+out<<"\n";
+}
+void main()
+{
+names n[10];
+clrscr();
+ofstream out;
+out.open("file.txt",ios::out|ios::app|ios::trunc);
+int m;
+cout<<"enter the no. of names to be entered\n";
+cin>>m;
+for(int i=0;i<m;i++)
+{
+cout<<"enter name";
+cin>>n[i].name;
+cout<<"the name in reverse order";
+reverse(out,n[i].name);
+}
+out.close();
+ifstream in;
+in.open("file.txt",ios::in|ios::binary);
+ofstream outf;
+outf.open("f1.txt",ios::out|ios::app|ios::trunc);
+char ch[255];
+cout<<"names from file\n";
+while(in) {
+in.getline(ch,255);
+if(in)
+reverse(outf,ch);
+}
+cout<<endl;
+in.close();
+outf.close();
+in.open("f1.txt",ios::in|ios::binary);
+outf.open("f2.txt",ios::out|ios::app|ios::trunc);
+cout<<"reverse order from files\n";
+while(in) {
+in.getline(ch,255);
+if(in)
+reverse(outf,ch);
+}
+in.close();
+outf.close();
+getch();
 }
